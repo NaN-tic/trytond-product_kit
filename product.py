@@ -2,8 +2,8 @@
 #this :repository contains the full copyright notices and license terms.
 from trytond.model import ModelView, ModelSQL, fields
 from trytond.pyson import Eval, Bool
-from trytond.transaction import Transaction
 from trytond.pool import Pool
+from decimal import Decimal
 
 class ProductKitLine(ModelSQL, ModelView):
     '''Product Kit'''
@@ -49,7 +49,7 @@ class ProductKitLine(ModelSQL, ModelView):
             return product.sale_uom.id
 
     def on_change_with_unit_digits(self, vals):
-        uom_obj = Pool().get('product.uom')
+        uom_obj = ().get('product.uom')
         if vals.get('unit'):
             uom = uom_obj.browse(vals['unit'])
             return uom.digits
@@ -60,35 +60,11 @@ class ProductKitLine(ModelSQL, ModelView):
         self._order.insert(0, ('sequence', 'ASC'))
 
         self._constraints += [
-            ('check_recursion', 'recursive_categories'),
+            ('check_recursion', 'recursive_kits'),
         ]
         self._error_messages.update({
-            'recursive_categories': 'You can not create recursive categories!',
+            'recursive_kits': 'You can not create recursive kits!',
         })
-
-    def check_recursion(self, ids):
-        '''
-        Function that checks if there is no recursion in the tree
-        :return: True or False
-        '''
-        return True
-
-        records = self.browse(ids)
-        visited = set()
-
-        for record in records:
-            walked = set()
-            walker = record.parent
-            while walker:
-                if walker.id == record.product:
-                    return False
-                walked.add(walker.id)
-                walker = walker.parent not in visited and walker.parent
-            visited.update(walked)
-
-        return True
-
-    # TODO: Check infinite recursion
 
 ProductKitLine()
 
@@ -109,34 +85,26 @@ class Product(ModelSQL, ModelView):
             'field if the list price of the kit should be fixed. Do not mark '
             'it if the price should be calculated from the sum of the prices '
             'of the products in the pack.'),
-    #list_price = fields.Function(fields.Numeric('List Price', states=STATES,
-    #        digits=(16, 4), depends=DEPENDS), 'get_list_price')
-    #list_price = fields.Property(fields.Numeric('List Price', states=STATES,
-    #            digits=(16, 4), depends=DEPENDS))
-    #list_price_uom = fields.Function(fields.Numeric('List Price',
-    #        digits=(16, 4)), 'get_price_uom')
-    #def get_list_price(self, ids, name):
+
 
     def explode_kit(self, product_id, quantity, unit, depth=1):
         """
         Walks through the Kit tree in depth-first order and returns
         a sorted list with all the components of the product.
         """
-        if depth == 10:
-            return
-
+        uom_obj = pool.get('product.uom')
         result = []
         for line in self.browse(product_id).kit_lines:
-            # TODO: Calculate unit_price. Is this the appropriate place?
+            qty = quantity * uom_obj.compute_qty(line.unit, line.quantity, unit)
             result.append({
                     'product_id': line.product.id,
-                    # TODO: Take into account unit of measure
-                    'quantity': line.quantity * quantity,
+                    'quantity': qty,
                     'unit': line.unit.id,
-                    #'unit_price': Decimal('0.00'),
+                    'unit_price': Decimal('0.00'),
                     'depth': depth,
                     })
-            result += self.explode_kit(line.product.id, line.quantity, line.unit, depth+1)
+            result += self.explode_kit(line.product.id, quantity,
+                    line.unit, depth+1)
         return result
 
 Product()
