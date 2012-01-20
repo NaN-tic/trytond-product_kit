@@ -49,7 +49,7 @@ class ProductKitLine(ModelSQL, ModelView):
             return product.sale_uom.id
 
     def on_change_with_unit_digits(self, vals):
-        uom_obj = ().get('product.uom')
+        uom_obj = Pool().get('product.uom')
         if vals.get('unit'):
             uom = uom_obj.browse(vals['unit'])
             return uom.digits
@@ -92,7 +92,7 @@ class Product(ModelSQL, ModelView):
         Walks through the Kit tree in depth-first order and returns
         a sorted list with all the components of the product.
         """
-        uom_obj = pool.get('product.uom')
+        uom_obj = Pool().get('product.uom')
         result = []
         for line in self.browse(product_id).kit_lines:
             qty = quantity * uom_obj.compute_qty(line.unit, line.quantity, unit)
