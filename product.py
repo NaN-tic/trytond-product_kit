@@ -46,7 +46,7 @@ class ProductKitLine(ModelSQL, ModelView):
         product_obj = Pool().get('product.product')
         if vals.get('product'):
             product = product_obj.browse(vals['product'])
-            return product.sale_uom.id
+            return product.default_uom.id
 
     def on_change_with_unit_digits(self, vals):
         uom_obj = Pool().get('product.uom')
@@ -65,6 +65,35 @@ class ProductKitLine(ModelSQL, ModelView):
         self._error_messages.update({
             'recursive_kits': 'You can not create recursive kits!',
         })
+
+    def check_recursion(self, ids, parent='parent'):
+
+        def check_recursion_product(products, all_products):
+            product_obj = Pool().get('product.product')
+
+            if not products:
+                return True
+            
+            new_products =[]
+            for product in product_obj.browse(products):
+                if product.kit and product.id in all_products:
+                    return False
+                elif not product.kit:
+                    continue                    
+                new_products.append(product.id)
+
+            if new_products:
+                return check_recursion_product(new_products,
+                        all_products + products)
+
+            return True
+
+        products=[]
+        for kit_line in self.browse(ids):
+            if kit_line.product.kit:
+                products += [ kit_line.product.id]
+
+        return check_recursion_product( products, products )
 
 ProductKitLine()
 
