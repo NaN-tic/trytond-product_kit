@@ -17,21 +17,37 @@ class ProductKitLine(ModelSQL, ModelView):
                 ('id', '!=', Eval('parent_parent')),
             ],
             ondelete='CASCADE')
+    product_uom_category = fields.Function(
+        fields.Many2One('product.uom.category', 'Product Uom Category',
+            on_change_with=['product']),
+        'get_product_uom_category')
+    
     sequence = fields.Integer('sequence')
     quantity = fields.Float('Quantity', digits=(16, Eval('unit_digits', 2)),
             required=True, depends=['unit_digits'])
     unit = fields.Many2One('product.uom', 'Unit', required=True,
             domain=[
-                ('category', '=',
-                (Eval('product'), 'product.default_uom.category')),
+                ('category', '=', Eval('product_uom_category')),
             ],
             context={
                 'category': (Eval('product'), 'product.default_uom.category'),
             },
             on_change_with=['product'],
-            depends=['product'])
+            depends=['product', 'product_uom_category'])
     unit_digits = fields.Function(fields.Integer('Unit Digits',
             on_change_with=['unit']), 'get_unit_digits')
+
+    def on_change_with_product_uom_category(self, vals):
+        product_obj = Pool().get('product.product')
+        if vals.get('product'):
+            product = product_obj.browse(vals['product'])
+            return product.default_uom.id
+
+    def get_product_uom_category(self, ids, name):
+        categories = {}
+        for line in self.browse(ids):
+            categories[line.id] = line.product.default_uom_category.id
+        return categories
 
     def get_unit_digits(self, ids, name):
         res = {}

@@ -5,7 +5,7 @@
     'name' : 'Product Kit',
     'name_es': 'Kits de Productos',
     'name_ca': 'Kits de Productes',
-    'version' : '2.2.0',
+    'version' : '2.3.0',
     'author' : 'NaN·tic',
     'email': 'info@nan-tic.com',
     'website': 'http://www.nan-tic.com/',
