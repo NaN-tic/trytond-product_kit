@@ -13,9 +13,9 @@ class ProductKitLine(ModelSQL, ModelView):
     parent = fields.Many2One('product.product', 'Parent Product', required=True,
             ondelete='CASCADE')
     product = fields.Many2One('product.product', 'Product', required=True,
-            domain=[
-                ('id', '!=', Eval('parent_parent')),
-            ],
+#            domain=[
+#                ('id', '!=', Eval('parent_parent')),
+#            ],
             ondelete='CASCADE')
     product_uom_category = fields.Function(
         fields.Many2One('product.uom.category', 'Product Uom Category',
@@ -41,7 +41,7 @@ class ProductKitLine(ModelSQL, ModelView):
         product_obj = Pool().get('product.product')
         if vals.get('product'):
             product = product_obj.browse(vals['product'])
-            return product.default_uom.id
+            return product.default_uom_category.id
 
     def get_product_uom_category(self, ids, name):
         categories = {}
