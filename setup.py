@@ -25,8 +25,7 @@ setup(name='trytond_product_kit',
     author=info.get('author', ''),
     author_email=info.get('email', ''),
     url=info.get('website', ''),
-    download_url="http://downloads.tryton.org/" + \
-            info.get('version', '0.0.1').rsplit('.', 1)[0] + '/',
+    download_url="https://bitbucket.org/angelnan/product_kit",
     package_dir={'trytond.modules.product_kit': '.'},
     packages=[
         'trytond.modules.product_kit',
