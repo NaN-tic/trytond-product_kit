@@ -1,157 +1,142 @@
-#This file is part of Tryton.  The COPYRIGHT file at the top level of
-#this :repository contains the full copyright notices and license terms.
-
+#This file is part product_kit module for Tryton.
+#The COPYRIGHT file at the top level of this repository contains 
+#the full copyright notices and license terms.
 from decimal import Decimal
-
 from trytond.model import ModelView, ModelSQL, fields
-from trytond.pyson import Eval, Bool
-from trytond.pool import Pool
+from trytond.pool import Pool, PoolMeta
+from trytond.pyson import If,Eval, Bool
+
+__all__ = ['ProductKitLine', 'Product']
+__metaclass__ = PoolMeta
 
 
 class ProductKitLine(ModelSQL, ModelView):
-    '''Product Kit'''
-    _name = 'product.kit.line'
-    _description = __doc__
-
-    parent = fields.Many2One('product.product', 'Parent Product', required=True,
-            ondelete='CASCADE')
-    sequence = fields.Integer('sequence')
-
+    "Product Kit"
+    __name__ = 'product.kit.line'
+    parent = fields.Many2One('product.product', 'Parent Product',
+        required=True, ondelete='CASCADE')
+    sequence = fields.Integer('Sequence')
     product = fields.Many2One('product.product', 'Product', required=True,
-#            domain=[
-#                ('id', '!=', Eval('parent_parent')),
-#            ],
-            ondelete='CASCADE')
+        on_change=['product', 'unit', 'quantity'], ondelete='CASCADE')
     product_uom_category = fields.Function(
         fields.Many2One('product.uom.category', 'Product Uom Category',
             on_change_with=['product']),
-        'get_product_uom_category')
-
+        'on_change_with_product_uom_category')
     quantity = fields.Float('Quantity', digits=(16, Eval('unit_digits', 2)),
-            required=True, depends=['unit_digits'])
-
+        required=True, depends=['unit_digits'])
     unit = fields.Many2One('product.uom', 'Unit', required=True,
-            domain=[
+        domain=[
+            If(Bool(Eval('product_uom_category')),
                 ('category', '=', Eval('product_uom_category')),
+                ('category', '!=', -1)),
             ],
-            context={
-                'category': (Eval('product'), 'product.default_uom.category'),
-            },
-            on_change_with=['product'],
-            depends=['product', 'product_uom_category'])
+        on_change=['product', 'quantity', 'unit'],
+        depends=['product', 'product_uom_category'])
     unit_digits = fields.Function(fields.Integer('Unit Digits',
-            on_change_with=['unit']), 'get_unit_digits')
+        on_change_with=['unit']), 'on_change_with_unit_digits')
 
-    # product.kit.line
-    def get_product_uom_category(self, ids, name):
-        categories = {}
-        for line in self.browse(ids):
-            categories[line.id] = line.product.default_uom_category.id
-        return categories
+    @staticmethod
+    def order_sequence(tables):
+        table, _ = tables[None]
+        return [table.sequence == None, table.sequence]
 
-    # product.kit.line
-    def on_change_with_product_uom_category(self, vals):
-        product_obj = Pool().get('product.product')
-        if vals.get('product'):
-            product = product_obj.browse(vals['product'])
-            return product.default_uom_category.id
+    @staticmethod
+    def default_sequence():
+        return 1
 
-    # product.kit.line
-    def on_change_with_unit(self, vals):
-        product_obj = Pool().get('product.product')
-        if vals.get('product'):
-            product = product_obj.browse(vals['product'])
-            return product.default_uom.id
+    def on_change_quantity(self):
+        return {}
 
-    # product.kit.line
-    def get_unit_digits(self, ids, name):
+    def on_change_product(self):
+        if not self.product:
+            return {}
         res = {}
-        for line in self.browse(ids):
-            if line.unit:
-                res[line.id] = line.unit.digits
-            else:
-                res[line.id] = 2
+
+        if not self.unit:
+            res['unit'] = self.product.default_uom.id
+            res['unit.rec_name'] = self.product.default_uom.rec_name
+            res['unit_digits'] = self.product.default_uom.digits
         return res
 
-    # product.kit.line
-    def on_change_with_unit_digits(self, vals):
-        uom_obj = Pool().get('product.uom')
-        if vals.get('unit'):
-            uom = uom_obj.browse(vals['unit'])
-            return uom.digits
+    def on_change_with_product_uom_category(self, name=None):
+        if self.product:
+            return self.product.default_uom_category.id
+
+    def on_change_unit(self):
+        return self.on_change_quantity()
+
+    def on_change_with_unit_digits(self, name=None):
+        if self.unit:
+            return self.unit.digits
         return 2
 
-    # product.kit.line
-    def __init__(self):
-        super(ProductKitLine, self).__init__()
-        self._order.insert(0, ('sequence', 'ASC'))
-
-        self._constraints += [
-            ('check_recursion', 'recursive_kits'),
-        ]
-        self._error_messages.update({
+    @classmethod
+    def __setup__(cls):
+        super(ProductKitLine, cls).__setup__()
+        cls._order.insert(0, ('sequence', 'ASC'))
+        cls._error_messages.update({
             'recursive_kits': 'You can not create recursive kits!',
         })
 
-    # product.kit.line
-    def check_recursion(self, ids, parent='parent'):
+    @classmethod
+    def validate(cls, kits):
+        super(ProductKitLine, cls).validate(kits)
+        cls.check_recursion_kits(kits)
 
+    @classmethod
+    def check_recursion_kits(cls, kits):
         def check_recursion_product(products, all_products):
-            product_obj = Pool().get('product.product')
-
+            Product = Pool().get('product.product')
             if not products:
                 return True
-
             new_products = []
-            for product in product_obj.browse(products):
+            for product in Product.browse(products):
                 if product.kit and product.id in all_products:
-                    return False
+                    cls.raise_user_error('recursive_kits')
                 elif not product.kit:
                     continue
-                new_products.append(product.id)
-
+                for line in product.kit_lines:
+                    new_products.append(line.product.id)
             if new_products:
                 return check_recursion_product(new_products,
                         all_products + products)
-
             return True
 
         products = []
-        for kit_line in self.browse(ids):
+        for kit_line in kits:
             if kit_line.product.kit:
                 products += [kit_line.product.id]
-
-        return check_recursion_product(products, products)
-
-ProductKitLine()
+        return check_recursion_product(products, [])
 
 
-class Product(ModelSQL, ModelView):
-    _name = "product.product"
+class Product:
+    __name__ = "product.product"
+    kit = fields.Boolean('Kit')
+    kit_lines = fields.One2Many('product.kit.line', 'parent', 'Product kits',
+        states={
+            'invisible': Bool(~Eval('kit')),
+            },
+        depends=['kit'])
+    kit_fixed_list_price = fields.Boolean('Kit Fixed List Price', 
+        states={
+            'invisible': Bool(~Eval('kit')),
+            },
+        depends=['kit'], help='Mark this field if the list price of the kit should '
+            'be fixed. Do not mark it if the price should be calculated from the sum '
+            'of the prices of the products in the pack.')
 
-    kit = fields.Boolean('Kit?')
-    kit_lines = fields.One2Many('product.kit.line', 'parent',
-            'Components', states={
-                'readonly': Bool(~Eval('kit')),
-            }, depends=['kit'])
-    kit_fixed_list_price = fields.Boolean('Fixed List Price', help='Mark this '
-            'field if the list price of the kit should be fixed. Do not mark '
-            'it if the price should be calculated from the sum of the prices '
-            'of the products in the pack.'),
-
-    # product.product
-    def explode_kit(self, product_id, quantity, unit, depth=1):
+    def explode_kit(self, products, quantity, unit, depth=1):
         """
         Walks through the Kit tree in depth-first order and returns
         a sorted list with all the components of the product.
         """
         uom_obj = Pool().get('product.uom')
         result = []
-        for line in self.browse(product_id).kit_lines:
+        for line in self.browse(products).kit_lines:
             qty = quantity * uom_obj.compute_qty(line.unit, line.quantity,
                     unit)
             result.append({
-                    'product_id': line.product.id,
+                    'product': line.product.id,
                     'quantity': qty,
                     'unit': line.unit.id,
                     'unit_price': Decimal('0.00'),
@@ -160,5 +145,3 @@ class Product(ModelSQL, ModelView):
             result += self.explode_kit(line.product.id, quantity,
                     line.unit, depth + 1)
         return result
-
-Product()
