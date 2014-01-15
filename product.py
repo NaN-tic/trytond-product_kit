@@ -1,10 +1,10 @@
 #This file is part product_kit module for Tryton.
-#The COPYRIGHT file at the top level of this repository contains 
+#The COPYRIGHT file at the top level of this repository contains
 #the full copyright notices and license terms.
 from decimal import Decimal
 from trytond.model import ModelView, ModelSQL, fields
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import If,Eval, Bool
+from trytond.pyson import If, Eval, Bool
 
 __all__ = ['ProductKitLine', 'Product']
 __metaclass__ = PoolMeta
@@ -117,13 +117,13 @@ class Product:
             'invisible': Bool(~Eval('kit')),
             },
         depends=['kit'])
-    kit_fixed_list_price = fields.Boolean('Kit Fixed List Price', 
+    kit_fixed_list_price = fields.Boolean('Kit Fixed List Price',
         states={
             'invisible': Bool(~Eval('kit')),
             },
-        depends=['kit'], help='Mark this field if the list price of the kit should '
-            'be fixed. Do not mark it if the price should be calculated from the sum '
-            'of the prices of the products in the pack.')
+        depends=['kit'], help='Mark this field if the list price of the kit '
+            'should be fixed. Do not mark it if the price should be calculated'
+            ' from the sum of the prices of the products in the pack.')
 
     def explode_kit(self, products, quantity, unit, depth=1):
         """
