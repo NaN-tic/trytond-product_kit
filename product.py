@@ -125,23 +125,25 @@ class Product:
             'should be fixed. Do not mark it if the price should be calculated'
             ' from the sum of the prices of the products in the pack.')
 
-    def explode_kit(self, products, quantity, unit, depth=1):
+    @classmethod
+    def explode_kit(cls, products, quantity, unit, depth=1):
         """
         Walks through the Kit tree in depth-first order and returns
         a sorted list with all the components of the product.
         """
         uom_obj = Pool().get('product.uom')
         result = []
-        for line in self.browse(products).kit_lines:
-            qty = quantity * uom_obj.compute_qty(line.unit, line.quantity,
-                    unit)
-            result.append({
-                    'product': line.product.id,
-                    'quantity': qty,
-                    'unit': line.unit.id,
-                    'unit_price': Decimal('0.00'),
-                    'depth': depth,
-                    })
-            result += self.explode_kit(line.product.id, quantity,
-                    line.unit, depth + 1)
+        for product in products:
+            for line in product.kit_lines:
+                qty = quantity * uom_obj.compute_qty(line.unit, line.quantity,
+                        unit)
+                result.append({
+                        'product': line.product,
+                        'quantity': qty,
+                        'unit': line.unit,
+                        'unit_price': Decimal('0.00'),
+                        'depth': depth,
+                        })
+                result += cls.explode_kit(line.product, quantity,
+                        line.unit, depth + 1)
         return result
