@@ -9,7 +9,7 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
             <field name="kit"/>
             <label name="kit_fixed_list_price"/>
             <field name="kit_fixed_list_price"/>
-            <field name='kit_lines' colspan="6"/>
         </group>
+        <field name='kit_lines' colspan="6"/>
     </xpath>
 </data>
