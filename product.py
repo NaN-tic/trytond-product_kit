@@ -17,10 +17,9 @@ class ProductKitLine(ModelSQL, ModelView):
         required=True, ondelete='CASCADE')
     sequence = fields.Integer('Sequence')
     product = fields.Many2One('product.product', 'Product', required=True,
-        on_change=['product', 'unit', 'quantity'], ondelete='CASCADE')
+        ondelete='CASCADE')
     product_uom_category = fields.Function(
-        fields.Many2One('product.uom.category', 'Product Uom Category',
-            on_change_with=['product']),
+        fields.Many2One('product.uom.category', 'Product Uom Category'),
         'on_change_with_product_uom_category')
     quantity = fields.Float('Quantity', digits=(16, Eval('unit_digits', 2)),
         required=True, depends=['unit_digits'])
@@ -30,10 +29,9 @@ class ProductKitLine(ModelSQL, ModelView):
                 ('category', '=', Eval('product_uom_category')),
                 ('category', '!=', -1)),
             ],
-        on_change=['product', 'quantity', 'unit'],
         depends=['product', 'product_uom_category'])
-    unit_digits = fields.Function(fields.Integer('Unit Digits',
-        on_change_with=['unit']), 'on_change_with_unit_digits')
+    unit_digits = fields.Function(fields.Integer('Unit Digits'),
+        'on_change_with_unit_digits')
 
     @staticmethod
     def order_sequence(tables):
@@ -47,6 +45,7 @@ class ProductKitLine(ModelSQL, ModelView):
     def on_change_quantity(self):
         return {}
 
+    @fields.depends('product', 'unit', 'quantity')
     def on_change_product(self):
         if not self.product:
             return {}
@@ -58,13 +57,16 @@ class ProductKitLine(ModelSQL, ModelView):
             res['unit_digits'] = self.product.default_uom.digits
         return res
 
+    @fields.depends('product')
     def on_change_with_product_uom_category(self, name=None):
         if self.product:
             return self.product.default_uom_category.id
 
+    @fields.depends('product', 'quantity', 'unit')
     def on_change_unit(self):
         return self.on_change_quantity()
 
+    @fields.depends('unit')
     def on_change_with_unit_digits(self, name=None):
         if self.unit:
             return self.unit.digits
