@@ -33,7 +33,7 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
         </record>
 
         <record model="ir.action.act_window" id="act_product_kit_line">
-            <field name="name">Product Kits</field>
+            <field name="name">Kit Lines</field>
             <field name="res_model">product.kit.line</field>
         </record>
         <record model="ir.action.act_window.view" id="act_template_list_view">

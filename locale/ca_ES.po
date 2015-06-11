@@ -79,6 +79,14 @@ msgstr ""
 "Marqueu aquest camp si el preu del kit és fix. Si no es marca, el preu es "
 "calcularà com la suma dels preus dels productes del kit."
 
+msgctxt "model:ir.action,name:act_product_kit_line"
+msgid "Kit Lines"
+msgstr "Línies del kit"
+
+msgctxt "model:ir.ui.menu,name:menu_product_kit_line"
+msgid "Kit Lines"
+msgstr "Línies del kit"
+
 msgctxt "model:product.kit.line,name:"
 msgid "Product Kit"
 msgstr "Producte del kit"

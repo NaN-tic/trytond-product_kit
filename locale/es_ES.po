@@ -79,6 +79,14 @@ msgstr ""
 "Marque este campo si el precio del kit es fijo. Si no se marca, el precio se"
 " calculará como la suma de los precios de los productos del kit."
 
+msgctxt "model:ir.action,name:act_product_kit_line"
+msgid "Kit Lines"
+msgstr "Líneas del kit"
+
+msgctxt "model:ir.ui.menu,name:menu_product_kit_line"
+msgid "Kit Lines"
+msgstr "Líneas del kit"
+
 msgctxt "model:product.kit.line,name:"
 msgid "Product Kit"
 msgstr "Producto del kit"
