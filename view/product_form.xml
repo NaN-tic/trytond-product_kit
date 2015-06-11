@@ -10,6 +10,6 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
             <label name="kit_fixed_list_price"/>
             <field name="kit_fixed_list_price"/>
         </group>
-        <field name='kit_lines' colspan="6"/>
+        <field name='kit_lines' colspan="6" view_ids="product_kit.product_kit_line_view_editable_tree,product_kit.product_kit_line_view_form"/>
     </xpath>
 </data>

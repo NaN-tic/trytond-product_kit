@@ -16,6 +16,11 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
             <field name="name">product_form</field>
         </record>
 
+        <record model="ir.ui.view" id="product_kit_line_view_editable_tree">
+            <field name="model">product.kit.line</field>
+            <field name="type">tree</field>
+            <field name="name">product_kit_line_editable_tree</field>
+        </record>
         <record model="ir.ui.view" id="product_kit_line_view_tree">
             <field name="model">product.kit.line</field>
             <field name="type">tree</field>
@@ -26,6 +31,25 @@ The COPYRIGHT file at the top level of this repository contains the full copyrig
             <field name="type">form</field>
             <field name="name">product_kit_line_form</field>
         </record>
+
+        <record model="ir.action.act_window" id="act_product_kit_line">
+            <field name="name">Product Kits</field>
+            <field name="res_model">product.kit.line</field>
+        </record>
+        <record model="ir.action.act_window.view" id="act_template_list_view">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="product_kit_line_view_tree"/>
+            <field name="act_window" ref="act_product_kit_line"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_product_kit_line_view">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="product_kit_line_view_form"/>
+            <field name="act_window" ref="act_product_kit_line"/>
+        </record>
+
+        <menuitem parent="product.menu_template"
+            id="menu_product_kit_line"
+            action="act_product_kit_line"/>
 
         <record model="ir.model.access" id="access_product_kit">
             <field name="model" search="[('model', '=', 'product.kit.line')]"/>
