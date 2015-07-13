@@ -43,19 +43,17 @@ class ProductKitLine(ModelSQL, ModelView):
         return 1
 
     def on_change_quantity(self):
-        return {}
+        pass
 
     @fields.depends('product', 'unit', 'quantity')
     def on_change_product(self):
         if not self.product:
-            return {}
-        res = {}
-
-        if not self.unit:
-            res['unit'] = self.product.default_uom.id
-            res['unit.rec_name'] = self.product.default_uom.rec_name
-            res['unit_digits'] = self.product.default_uom.digits
-        return res
+            self.unit = None
+            self.unit_digits = None
+        elif not self.unit:
+            self.unit = self.product.default_uom.id
+            self.unit.rec_name = self.product.default_uom.rec_name
+            self.unit_digits = self.product.default_uom.digits
 
     @fields.depends('product')
     def on_change_with_product_uom_category(self, name=None):
@@ -64,7 +62,7 @@ class ProductKitLine(ModelSQL, ModelView):
 
     @fields.depends('product', 'quantity', 'unit')
     def on_change_unit(self):
-        return self.on_change_quantity()
+        self.on_change_quantity()
 
     @fields.depends('unit')
     def on_change_with_unit_digits(self, name=None):
