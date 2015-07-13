@@ -1,0 +1,96 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "error:product.kit.line:"
+msgid "You can not create recursive kits!"
+msgstr "No puede crear kits recursivos."
+
+msgctxt "field:product.kit.line,create_date:"
+msgid "Create Date"
+msgstr "Fecha creación"
+
+msgctxt "field:product.kit.line,create_uid:"
+msgid "Create User"
+msgstr "Usuario creación"
+
+msgctxt "field:product.kit.line,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:product.kit.line,parent:"
+msgid "Parent Product"
+msgstr "Producto padre"
+
+msgctxt "field:product.kit.line,product:"
+msgid "Product"
+msgstr "Producto"
+
+msgctxt "field:product.kit.line,product_uom_category:"
+msgid "Product Uom Category"
+msgstr "Categoría UdM del producto"
+
+msgctxt "field:product.kit.line,quantity:"
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgctxt "field:product.kit.line,rec_name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:product.kit.line,sequence:"
+msgid "Sequence"
+msgstr "Secuencia"
+
+msgctxt "field:product.kit.line,unit:"
+msgid "Unit"
+msgstr "Unidad"
+
+msgctxt "field:product.kit.line,unit_digits:"
+msgid "Unit Digits"
+msgstr "Decimales de la unidad"
+
+msgctxt "field:product.kit.line,write_date:"
+msgid "Write Date"
+msgstr "Fecha modificación"
+
+msgctxt "field:product.kit.line,write_uid:"
+msgid "Write User"
+msgstr "Usuario modificación"
+
+msgctxt "field:product.product,kit:"
+msgid "Kit"
+msgstr "Kit"
+
+msgctxt "field:product.product,kit_fixed_list_price:"
+msgid "Kit Fixed List Price"
+msgstr "Precio kit fijo"
+
+msgctxt "field:product.product,kit_lines:"
+msgid "Product kits"
+msgstr "Productos del kit"
+
+msgctxt "help:product.product,kit_fixed_list_price:"
+msgid ""
+"Mark this field if the list price of the kit should be fixed. Do not mark it"
+" if the price should be calculated from the sum of the prices of the "
+"products in the pack."
+msgstr ""
+"Marque este campo si el precio del kit es fijo. Si no se marca, el precio se"
+" calculará como la suma de los precios de los productos del kit."
+
+msgctxt "model:ir.action,name:act_product_kit_line"
+msgid "Kit Lines"
+msgstr "Líneas del kit"
+
+msgctxt "model:ir.ui.menu,name:menu_product_kit_line"
+msgid "Kit Lines"
+msgstr "Líneas del kit"
+
+msgctxt "model:product.kit.line,name:"
+msgid "Product Kit"
+msgstr "Producto del kit"
+
+msgctxt "view:product.kit.line:"
+msgid "Kit Lines"
+msgstr "Líneas del kit"
