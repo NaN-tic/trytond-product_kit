@@ -42,9 +42,6 @@ class ProductKitLine(ModelSQL, ModelView):
     def default_sequence():
         return 1
 
-    def on_change_quantity(self):
-        pass
-
     @fields.depends('product', 'unit', 'quantity')
     def on_change_product(self):
         if not self.product:
