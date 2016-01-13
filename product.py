@@ -144,3 +144,10 @@ class Product:
                 result += cls.explode_kit(line.product, quantity,
                         line.unit, depth + 1)
         return result
+
+    @classmethod
+    def view_attributes(cls):
+        return super(Product, cls).view_attributes() + [
+            ('//page[@id="kit"]', 'states', {
+                    'invisible': ~Eval('kit'),
+                    })]
