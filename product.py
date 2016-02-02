@@ -77,8 +77,8 @@ class ProductKitLine(ModelSQL, ModelView):
         super(ProductKitLine, cls).__setup__()
         cls._order.insert(0, ('sequence', 'ASC'))
         cls._error_messages.update({
-            'recursive_kits': 'You can not create recursive kits!',
-        })
+                'recursive_kits': 'You can not create recursive kits.',
+                })
 
     @classmethod
     def validate(cls, kits):
