@@ -7,7 +7,6 @@ from trytond.pool import Pool, PoolMeta
 from trytond.pyson import If, Eval, Bool
 
 __all__ = ['ProductKitLine', 'Product']
-__metaclass__ = PoolMeta
 
 
 class ProductKitLine(ModelSQL, ModelView):
@@ -107,6 +106,7 @@ class ProductKitLine(ModelSQL, ModelView):
 
 
 class Product:
+    __metaclass__ = PoolMeta
     __name__ = "product.product"
     kit = fields.Boolean('Kit')
     kit_lines = fields.One2Many('product.kit.line', 'parent', 'Product kits',
