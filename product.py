@@ -1,7 +1,7 @@
-#This file is part product_kit module for Tryton.
-#The COPYRIGHT file at the top level of this repository contains
-#the full copyright notices and license terms.
+# The COPYRIGHT file at the top level of this repository contains the full
+# copyright notices and license terms.
 from decimal import Decimal
+
 from trytond.model import ModelView, ModelSQL, fields
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import If, Eval, Bool
@@ -118,9 +118,10 @@ class Product:
         states={
             'invisible': Bool(~Eval('kit')),
             },
-        depends=['kit'], help='Mark this field if the list price of the kit '
-            'should be fixed. Do not mark it if the price should be calculated'
-            ' from the sum of the prices of the products in the pack.')
+        depends=['kit'],
+        help='Mark this field if the list price of the kit should be fixed. '
+        'Do not mark it if the price should be calculated from the sum of the '
+        'prices of the products in the pack.')
 
     @classmethod
     def explode_kit(cls, products, quantity, unit, depth=1):
