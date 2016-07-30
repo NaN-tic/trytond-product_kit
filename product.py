@@ -142,7 +142,7 @@ class Product:
                         'unit_price': Decimal('0.00'),
                         'depth': depth,
                         })
-                result += cls.explode_kit(line.product, quantity,
+                result += cls.explode_kit([line.product], quantity,
                         line.unit, depth + 1)
         return result
 
