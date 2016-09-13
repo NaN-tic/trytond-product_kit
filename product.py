@@ -2,19 +2,18 @@
 # copyright notices and license terms.
 from decimal import Decimal
 
-from trytond.model import ModelView, ModelSQL, fields
+from trytond.model import ModelView, ModelSQL, fields, sequence_ordered
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import If, Eval, Bool
 
 __all__ = ['ProductKitLine', 'Product']
 
 
-class ProductKitLine(ModelSQL, ModelView):
+class ProductKitLine(sequence_ordered(), ModelSQL, ModelView):
     "Product Kit"
     __name__ = 'product.kit.line'
     parent = fields.Many2One('product.product', 'Parent Product',
         required=True, ondelete='CASCADE')
-    sequence = fields.Integer('Sequence')
     product = fields.Many2One('product.product', 'Product', required=True,
         ondelete='CASCADE')
     product_uom_category = fields.Function(
@@ -31,15 +30,6 @@ class ProductKitLine(ModelSQL, ModelView):
         depends=['product', 'product_uom_category'])
     unit_digits = fields.Function(fields.Integer('Unit Digits'),
         'on_change_with_unit_digits')
-
-    @staticmethod
-    def order_sequence(tables):
-        table, _ = tables[None]
-        return [table.sequence == None, table.sequence]
-
-    @staticmethod
-    def default_sequence():
-        return 1
 
     @fields.depends('product', 'unit', 'quantity')
     def on_change_product(self):
@@ -69,7 +59,6 @@ class ProductKitLine(ModelSQL, ModelView):
     @classmethod
     def __setup__(cls):
         super(ProductKitLine, cls).__setup__()
-        cls._order.insert(0, ('sequence', 'ASC'))
         cls._error_messages.update({
             'recursive_kits': 'You can not create recursive kits!',
         })
