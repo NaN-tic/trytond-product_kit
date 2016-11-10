@@ -8,15 +8,15 @@ msgstr "No puede crear kits recursivos."
 
 msgctxt "field:product.kit.line,create_date:"
 msgid "Create Date"
-msgstr "Fecha de creación"
+msgstr "Fecha creación"
 
 msgctxt "field:product.kit.line,create_uid:"
 msgid "Create User"
-msgstr "Usuario de creación"
+msgstr "Usuario creación"
 
 msgctxt "field:product.kit.line,id:"
 msgid "ID"
-msgstr "Identificador"
+msgstr "ID"
 
 msgctxt "field:product.kit.line,parent:"
 msgid "Parent Product"
@@ -52,11 +52,11 @@ msgstr "Decimales de la unidad"
 
 msgctxt "field:product.kit.line,write_date:"
 msgid "Write Date"
-msgstr "Fecha de modificación"
+msgstr "Fecha modificación"
 
 msgctxt "field:product.kit.line,write_uid:"
 msgid "Write User"
-msgstr "Usuario de modificación"
+msgstr "Usuario modificación"
 
 msgctxt "field:product.product,kit:"
 msgid "Kit"
