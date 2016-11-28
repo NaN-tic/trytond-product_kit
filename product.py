@@ -46,10 +46,6 @@ class ProductKitLine(sequence_ordered(), ModelSQL, ModelView):
         if self.product:
             return self.product.default_uom_category.id
 
-    @fields.depends('product', 'quantity', 'unit')
-    def on_change_unit(self):
-        self.on_change_quantity()
-
     @fields.depends('unit')
     def on_change_with_unit_digits(self, name=None):
         if self.unit:
