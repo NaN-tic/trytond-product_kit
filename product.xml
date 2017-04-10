@@ -6,21 +6,18 @@
         <!-- product.product -->
         <record model="ir.ui.view" id="product_view_tree">
             <field name="model">product.product</field>
-            <field name="type" eval="None"/>
             <field name="inherit" ref="product.product_view_tree"/>
             <field name="name">product_tree</field>
         </record>
 
         <record model="ir.ui.view" id="product_view_tree_simple">
             <field name="model">product.product</field>
-            <field name="type" eval="None"/>
             <field name="inherit" ref="product.product_view_tree_simple"/>
             <field name="name">product_tree_simple</field>
         </record>
 
         <record model="ir.ui.view" id="product_view_form">
             <field name="model">product.product</field>
-            <field name="type" eval="None"/>
             <field name="inherit" ref="product.product_view_form"/>
             <field name="name">product_form</field>
         </record>
