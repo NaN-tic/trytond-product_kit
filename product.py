@@ -2,7 +2,7 @@
 # copyright notices and license terms.
 from decimal import Decimal
 
-from trytond.model import ModelView, ModelSQL, fields
+from trytond.model import ModelView, ModelSQL, fields, Check
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import If, Eval, Bool
 
@@ -31,6 +31,19 @@ class ProductKitLine(ModelSQL, ModelView):
         depends=['product', 'product_uom_category'])
     unit_digits = fields.Function(fields.Integer('Unit Digits'),
         'on_change_with_unit_digits')
+
+    @classmethod
+    def __setup__(cls):
+        super(ProductKitLine, cls).__setup__()
+        cls._order.insert(0, ('sequence', 'ASC'))
+        cls._error_messages.update({
+            'recursive_kits': 'You can not create recursive kits!',
+        })
+        t = cls.__table__()
+        cls._sql_constraints += [
+            ('check_qty_pos', Check(t, t.quantity > 0),
+                'The quantity must be bigger than 0'),
+            ]
 
     @staticmethod
     def order_sequence(tables):
@@ -65,14 +78,6 @@ class ProductKitLine(ModelSQL, ModelView):
         if self.unit:
             return self.unit.digits
         return 2
-
-    @classmethod
-    def __setup__(cls):
-        super(ProductKitLine, cls).__setup__()
-        cls._order.insert(0, ('sequence', 'ASC'))
-        cls._error_messages.update({
-            'recursive_kits': 'You can not create recursive kits!',
-        })
 
     @classmethod
     def validate(cls, kits):
