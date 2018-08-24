@@ -95,8 +95,7 @@ class ProductKitLine(sequence_ordered(), ModelSQL, ModelView):
         return check_recursion_product(products, [])
 
 
-class Product:
-    __metaclass__ = PoolMeta
+class Product(metaclass=PoolMeta):
     __name__ = "product.product"
     kit = fields.Boolean('Kit')
     kit_lines = fields.One2Many('product.kit.line', 'parent', 'Product kits',
