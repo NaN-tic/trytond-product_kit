@@ -16,6 +16,12 @@
             <field name="name">product_form</field>
         </record>
 
+        <record model="ir.ui.view" id="product_view_form_simple">
+            <field name="model">product.product</field>
+            <field name="inherit" ref="product.product_view_form_simple"/>
+            <field name="name">product_form_simple</field>
+        </record>
+
         <!-- product.kit.line -->
         <record model="ir.ui.view" id="product_kit_line_view_editable_tree">
             <field name="model">product.kit.line</field>
