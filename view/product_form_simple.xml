@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!-- This file is part of product_kit module for Tryton.
+The COPYRIGHT file at the top level of this repository contains the full copyright notices and license terms. -->
+<data>
+    <xpath expr="/form/field[@name='description']" position="after">
+        <group id="kit" colspan="6" col="4">
+          <label name="kit"/>
+          <field name="kit"/>
+          <label name="kit_fixed_list_price"/>
+          <field name="kit_fixed_list_price"/>
+          <field name='kit_lines' colspan="6" view_ids="product_kit.product_kit_line_view_editable_tree,product_kit.product_kit_line_view_form"/>
+        </group>
+    </xpath>
+</data>
