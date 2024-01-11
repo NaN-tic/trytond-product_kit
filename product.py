@@ -22,7 +22,7 @@ class ProductKitLine(sequence_ordered(), ModelSQL, ModelView):
         fields.Many2One('product.uom.category', 'Product Uom Category'),
         'on_change_with_product_uom_category')
     quantity = fields.Float('Quantity', digits=(16, Eval('unit_digits', 2)),
-        required=True, depends=['unit_digits'])
+        required=True)
     unit = fields.Many2One('product.uom', 'Unit', required=True,
         domain=[
             If(Bool(Eval('product_uom_category')),
