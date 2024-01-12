@@ -28,8 +28,7 @@ class ProductKitLine(sequence_ordered(), ModelSQL, ModelView):
             If(Bool(Eval('product_uom_category')),
                 ('category', '=', Eval('product_uom_category')),
                 ('category', '!=', -1)),
-            ],
-        depends=['product', 'product_uom_category'])
+            ])
     unit_digits = fields.Function(fields.Integer('Unit Digits'),
         'on_change_with_unit_digits')
 
@@ -100,13 +99,11 @@ class Product(metaclass=PoolMeta):
     kit_lines = fields.One2Many('product.kit.line', 'parent', 'Product kits',
         states={
             'invisible': Bool(~Eval('kit')),
-            },
-        depends=['kit'])
+            })
     kit_fixed_list_price = fields.Boolean('Kit Fixed List Price',
         states={
             'invisible': Bool(~Eval('kit')),
             },
-        depends=['kit'],
         help='Mark this field if the list price of the kit should be fixed. '
         'Do not mark it if the price should be calculated from the sum of the '
         'prices of the products in the pack.')
