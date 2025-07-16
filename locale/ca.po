@@ -2,14 +2,6 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-msgctxt "error:product.kit.line:"
-msgid "The quantity must be bigger than 0"
-msgstr "La quantitat ha de ser més gran que 0."
-
-msgctxt "error:product.kit.line:"
-msgid "You can not create recursive kits!"
-msgstr "No podeu crear kits recursius."
-
 msgctxt "field:product.kit.line,create_date:"
 msgid "Create Date"
 msgstr "Data de creació"
