@@ -1,10 +1,6 @@
-# 
+#
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
-
-msgctxt "error:product.kit.line:"
-msgid "You can not create recursive kits!"
-msgstr "No puede crear kits recursivos."
 
 msgctxt "field:product.kit.line,create_date:"
 msgid "Create Date"
