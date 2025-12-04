@@ -6,9 +6,7 @@ from trytond.model import ModelView, ModelSQL, fields, Check, sequence_ordered
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import If, Eval, Bool
 from trytond.i18n import gettext
-from trytond.exceptions import UserError
-
-__all__ = ['ProductKitLine', 'Product']
+from trytond.model.exceptions import ValidationError
 
 
 class ProductKitLine(sequence_ordered(), ModelSQL, ModelView):
@@ -76,7 +74,7 @@ class ProductKitLine(sequence_ordered(), ModelSQL, ModelView):
             new_products = []
             for product in Product.browse(products):
                 if product.kit and product.id in all_products:
-                    raise UserError(gettext('product_kit.recursive_kits'))
+                    raise ValidationError(gettext('product_kit.recursive_kits'))
                 elif not product.kit:
                     continue
                 for line in product.kit_lines:
